@@ -3,12 +3,14 @@ import numpy as nm
 import matplotlib.pyplot as plt
 
 def UI():
-    print("1. Rumus Kinematic DoF 2")
-    print("2. Rumus Kinematic DoF N")
+    print("\n")
+    print("1. Kinematic Formula (DoF 2)")
+    print("2. Kinematic Formula (DoF N)")
     print("3. Show Arm in 2D")
     print("4. Show Arm in 3D")
-    print("5. Inverse Kinematic DoF 2")
+    print("5. Inverse Kinematic (DoF 2)")
     print("0. Exit")
+    print("\n")
 
 def takematrix():
     n_str=input("How many DoF: ")
@@ -48,13 +50,13 @@ def calcmatrix(n, allangle, alllength):
     return H0N
     
 def kinematicdof2():
-    a_str=input("Enter Theta1 ")
+    a_str=input("Enter Theta1: ")
     a=math.radians(int (a_str))   
-    l1_str=input("Enter L1 ")
+    l1_str=input("Enter L1: ")
     l1=int(l1_str)
-    b_str=input("Enter Theta2 ")
+    b_str=input("Enter Theta2: ")
     b=math.radians(int (b_str))
-    l2_str=input("Enter L2 ")
+    l2_str=input("Enter L2: ")
     l2=int(l2_str)    
     
     H01=nm.matrix(([math.cos(a), -math.sin(a), 0],
@@ -84,9 +86,9 @@ def KinematicDoFN():
     
 def inversekin():
     x_str=input("X final: ")
-    x=int(x_str)
+    x_final=int(x_str)
     y_str=input("Y final: ")
-    y=int(y_str)
+    y_final=int(y_str)
     l1_str=input("Enter L1: ")
     l1=int(l1_str)
     l2_str=input("Enter L2: ")
@@ -96,18 +98,44 @@ def inversekin():
         print("Input value l1 and l2 greater than 0")
         return
 
-    r=math.sqrt((l1**2+l2**2))
+    r=math.sqrt((x_final**2+y_final**2))
     
-    if ((l1+l2)>r or abs(l1-l2)<r):
-        print(f"The point in ({x}, {y}) is unreachable ")
+    if ((r>(l1+l2)) or r<(abs(l1-l2))):
+        print(f"The point in ({x_final}, {y_final}) is unreachable ")
         return
         
-    theta2=math.acos((x**2+y**2-l1**2-l2**2)/(2*l1*l2))
-    theta1=math.atan2(y, x)-math.atan2((l2*math.sin(theta2)), (l1+l2*math.cos(theta2)))
+    theta2=math.acos((x_final**2+y_final**2-l1**2-l2**2)/(2*l1*l2))
+    theta1=math.atan2(y_final, x_final)-math.atan2((l2*math.sin(theta2)), (l1+l2*math.cos(theta2)))
     
-    print(theta2)
-    print(theta1)
-
+    print(f"First angle is {math.degrees(theta1)} with arm length of {l1}")
+    print(f"Second angle is {math.degrees(theta2)} with arm length of {l2}")
+    
+    print("Do you want to show the arm? [Y/n]")
+    choice=input()
+    
+    if (choice=="Y" or choice=="y"):
+        x0, y0=0, 0    
+        plt.figure()
+        plt.plot(x0, y0, 'ko', markersize=8, label="Origin")
+        x1=l1*math.cos(theta1)
+        x2=l1*math.cos(theta1)+l2*math.cos(theta1+theta2)
+        y1=l1*math.sin(theta1)
+        y2=l1*math.sin(theta1)+l2*math.sin(theta1+theta2)
+        
+        plt.plot([x0, x1], [y0, y1], "b-", linewidth=2, label="L1")
+        plt.plot(x1, y1, "ro", markersize=8, label="Joint 1")
+        plt.plot([x1, x2], [y1, y2], "b-", linewidth=2, label="2")
+        plt.plot(x_final, y_final, 'xc', markersize=8, label="End Effector")
+        plt.xlabel('X-axis')
+        plt.ylabel('Y-axis')
+        plt.title(f'Forward Kinematics DoF 2')
+        plt.grid(True)
+        plt.axis('equal')  
+        plt.legend()
+        plt.show()
+    else:
+        return
+    
 def showarmN():
     n, alllength, allangle, H0N=takematrix()
 
