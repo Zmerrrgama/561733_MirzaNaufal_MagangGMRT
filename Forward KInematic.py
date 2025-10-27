@@ -28,27 +28,6 @@ def takematrix():
     
     return n, alllength, allangle
 
-def calcmatrix(n, allangle, alllength):
-    H0N=nm.matrix(([1, 0, 0],
-                  [0, 1, 0],
-                  [0, 0, 1]))
-    
-    for i in range(n):
-        angle_n=allangle[i]
-        length_n=alllength[i]
-        
-        rotation=nm.matrix(([math.cos(angle_n), -math.sin(angle_n), 0],
-                            [math.sin(angle_n), math.cos(angle_n), 0],
-                            [0, 0, 1]))
-        
-        trans=nm.matrix(([1, 0, length_n],
-                        [0, 1, 0],
-                        [0, 0, 1]))
-        
-        HRT=rotation*trans
-        H0N=H0N*HRT
-    return H0N
-    
 def kinematicdof2():
     a_str=input("Enter Theta1: ")
     a=math.radians(int (a_str))   
@@ -76,12 +55,30 @@ def kinematicdof2():
                     [0, 0, 1]))
     
     H04=H01*H12*H23*H34
+    print("H04: ")
     print(H04)
     
 def KinematicDoFN():
     n, alllength, allangle=takematrix()
+    H0N=nm.matrix(([1, 0, 0],
+                  [0, 1, 0],
+                  [0, 0, 1]))
     
-    H0N=calcmatrix(n, allangle, alllength)
+    for i in range(n):
+        angle_n=allangle[i]
+        length_n=alllength[i]
+        
+        rotation=nm.matrix(([math.cos(angle_n), -math.sin(angle_n), 0],
+                            [math.sin(angle_n), math.cos(angle_n), 0],
+                            [0, 0, 1]))
+        
+        trans=nm.matrix(([1, 0, length_n],
+                        [0, 1, 0],
+                        [0, 0, 1]))
+        
+        HRT=rotation*trans
+        H0N=H0N*HRT
+    print(f"H0{2*(i)}: ")
     print(H0N)        
     
 def inversekin():
@@ -137,11 +134,15 @@ def inversekin():
         return
     
 def showarmN():
-    n, alllength, allangle, H0N=takematrix()
+    n, alllength, allangle=takematrix()
 
     x0, y0=0, 0    
     plt.figure()
     plt.plot(x0, y0, 'ko', markersize=8, label="Origin")
+    
+    H0N=([1, 0, 0],
+         [0, 1, 0],
+         [0, 0, 1])
     
     for i in range (n):
         angle_n=allangle[i]
@@ -220,7 +221,7 @@ def showarmN3D():
         z1=H0N[2, 3]
         
         ax.plot([x0, x1], [y0, y1], [z0, z1], linewidth=2, label=(f'l{i+1}'))
-        if (i<n-1 and i>0):
+        if (i>0 and i<=n-1 ):
             ax.plot(x0, y0, z0, "ro", markersize=10, label=(f'Joint {i}')) 
                
         x0=H0N[0, 3]
