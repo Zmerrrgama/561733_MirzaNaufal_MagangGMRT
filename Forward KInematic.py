@@ -28,15 +28,11 @@ def takematrix():
     
     return n, alllength, allangle
 
-def kinematicdof2():
-    a_str=input("Enter Theta1: ")
-    a=math.radians(int (a_str))   
-    l1_str=input("Enter L1: ")
-    l1=int(l1_str)
-    b_str=input("Enter Theta2: ")
-    b=math.radians(int (b_str))
-    l2_str=input("Enter L2: ")
-    l2=int(l2_str)    
+def kinematicdof2(): #hasil study , NIM 25/561733/PA/23684, Sehingga Femur=33 dan Tibia=84
+    a=math.radians(30)   
+    l1=33
+    b=math.radians(40)
+    l2=84    
     
     H01=nm.matrix(([math.cos(a), -math.sin(a), 0],
                     [math.sin(a), math.cos(a), 0],
@@ -55,6 +51,10 @@ def kinematicdof2():
                     [0, 0, 1]))
     
     H04=H01*H12*H23*H34
+    print("Tibia=33\n")
+    print("FIbula=84\n")
+    print("Theta 1=30\n")
+    print("Theta 2=40\n")
     print("H04: ")
     print(H04)
     
